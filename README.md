@@ -16,7 +16,7 @@ Add new call app, which copy call/email in chained company
 # Тестирование
 1. Запустить локальный сервер `symfony server:start`
 2. Запустить на общедоступном сервере.
-3. Сделать тестовый звонок: curl.exe -i -X POST -H "Content-Type:application/json" -d \`@startcall.json http://localhost:8000/call/start
+3. Сделать тестовый звонок: ```curl.exe -i -X POST -H "Content-Type:application/json" -d \`@startcall.json http://localhost:8000/call/start```
 4. Звонок должен отобразиться на портале Битрикс. Также в карточке звонка должен отобразиться виджет с информацией о контакте.
 5. Из терминала или файла var/call_data.txt скопировать Call_id и вставить его в файл endcall.json
-6. Завершить тестовый звонок: curl.exe -i -X POST -H "Content-Type:application/json" -d \`@endcall.json http://localhost:8000/call/finish
+6. Завершить тестовый звонок: ```curl.exe -i -X POST -H "Content-Type:application/json" -d \`@endcall.json http://localhost:8000/call/finish```
