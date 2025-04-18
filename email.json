@@ -1,5 +1,5 @@
 {
-    "email": "testemail@gmail.com",
+    "email": "test@gmail.com",
     "subject": "Тестовое письмо",
     "body": "Это тестовое письмо.",
     "direction": "INCOMING"

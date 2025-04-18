@@ -1,8 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Редактирование данных клиента</title>
-    <style>
+{% if isEmbedded %}
+    <div class="call-card">
+        <h2>Карточка звонка</h2>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+        {% if entityData is defined and entityData %}
+            <form method="POST">
+                <label>Имя:</label>
+                <input type="text" name="name" value="{{ entityData.NAME ?? entityData.TITLE ?? '' }}">
+                <label>Телефон:</label>
+                <input type="text" name="phone" value="{{ entityData.PHONE[0].VALUE ?? '' }}">
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ entityData.EMAIL[0].VALUE ?? '' }}">
+                <button type="submit">Сохранить</button>
+            </form>
+        {% else %}
+            <p>Данные сущности недоступны.</p>
+            <p>ID звонка: {{ callId|default('нет данных') }}</p>
+            <p>Тип сущности: {{ entityType|default('нет данных') }}</p>
+            <p>ID сущности: {{ entityId|default('нет данных') }}</p>
+        {% endif %}
+    </div>
+{% else %}
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Карточка звонка</title>
+            <style>
         .call-card-form {
             font-family: Arial, sans-serif;
             padding: 10px;
@@ -26,28 +50,67 @@
         .call-card-form button:hover {
             background-color: #218838;
         }
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        pre {
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-width: 100%;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 4px;
+        }
     </style>
-</head>
-<body>
-    <div class="call-card-form">
-        <h3>Редактирование данных клиента</h3>
-        {% if entityType is defined and entityId is defined %}
-
-            <form id="call-card-form" method="POST" action="{{ path('call_card', {'call_id': callId}) }}">
-                <label for="name">Имя/Название:</label>
-                <input type="text" id="name" name="name" value="{{ entityData.NAME ?? entityData.TITLE ?? '' }}" placeholder="Имя или название">
-
-                <label for="phone">Телефон:</label>
-                <input type="text" id="phone" name="phone" value="{{ entityData.PHONE[0].VALUE ?? '' }}" placeholder="Телефон">
-
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" value="{{ entityData.EMAIL[0].VALUE ?? '' }}" placeholder="Email">
-
+    </head>
+    <body>
+        <h1>Карточка звонка</h1>
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+        
+        {% if debugMode is defined and debugMode %}
+            <div class="debug-info">
+                <h3>Режим отладки</h3>
+                <p>Это режим отладки карточки звонка. Для нормальной работы необходимо запускать приложение через интерфейс Битрикс24.</p>
+                
+                <h4>Информация о запросе:</h4>
+                <pre>{{ requestData|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre>
+                
+                <h4>Необходимые параметры:</h4>
+                <ul>
+                    <li>AUTH_ID - токен авторизации</li>
+                    <li>REFRESH_ID - токен обновления</li>
+                    <li>DOMAIN - домен портала Битрикс24</li>
+                    <li>PLACEMENT - размещение (должно быть CALL_CARD)</li>
+                    <li>PLACEMENT_OPTIONS - опции размещения (информация о звонке)</li>
+                </ul>
+            </div>
+        {% elseif entityData is defined and entityData %}
+            <form method="POST" class="call-card-form">
+                <label>Имя:</label>
+                <input type="text" name="name" value="{{ entityData.NAME ?? entityData.TITLE ?? '' }}">
+                <label>Телефон:</label>
+                <input type="text" name="phone" value="{{ entityData.PHONE[0].VALUE ?? '' }}">
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ entityData.EMAIL[0].VALUE ?? '' }}">
                 <button type="submit">Сохранить</button>
             </form>
         {% else %}
-            <p>Загрузка данных...</p>
+            <p>Данные сущности недоступны.</p>
+            
+            <div class="debug-info">
+                <h3>Диагностическая информация:</h3>
+                <p>ID звонка: {{ callId|default('нет данных') }}</p>
+                <p>Тип сущности: {{ entityType|default('нет данных') }}</p>
+                <p>ID сущности: {{ entityId|default('нет данных') }}</p>
+            </div>
         {% endif %}
-    </div>
-</body>
-</html>
+    </body>
+    </html>
+{% endif %}
